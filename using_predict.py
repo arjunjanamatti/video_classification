@@ -60,3 +60,15 @@ for index, video in enumerate(videos_list[:10]):
 finish = time.perf_counter()
 
 print(f'Finished in {round(finish-start, 2)} seconds(s) ')
+
+# #Devar #Hot #Blue Sexy Blue Film Hot And Sexy Video 2021_ Bhabhi Devar Hot Movie Hot Desi Indian is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 59.01%
+# #Hot Romantic Video _ Suhaag Raat _ Sexy Video - Hot Web Series - Sex Video - Devar Bhabhi Ki Chudai is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 83.87%
+# #Open_desi_sexy_video​ sexy girl_Hindi sexy video pron video sex video sexy' Blu film xvideose_BF is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 57.26%
+# #Shilpa Shetty __ Best Romantic Scenes __ Hindi Movie SHILPA THE BIGGDON 720p HD is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 51.82%
+# 18+ Kama Sutr is categorized as: "SAFE VIDEO", since percentage of unsafe images: 17.5%
+# bangla hot video 2020 _sex free video _xx 2020 _HD hot video,bangla new xx videos 2020 Part 1 is categorized as: "SAFE VIDEO", since percentage of unsafe images: 17.02%
+# Best New Teacher And Student Sex Scene Full Web Series 2020 is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 52.48%
+# Best Ullu Web Series Romantic sex Scene _ Hot Scene Full Hd Movie _ Sexy Kiss Video is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 55.05%
+# BreastFeeding Hand Expression & Saving Milk for Baby    BreastFeeding Hand Expression Tip's& Method is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 86.67%
+# CHARM SUKH JANE ANJANE MEIN 2 PART 1 _ ULLU WEB SERIES _ STORY EXPLAINED WITH GAMEPLAY _ is categorized as: "SAFE VIDEO", since percentage of unsafe images: 1.8%
+# Finished in 1274.82 seconds(s)
