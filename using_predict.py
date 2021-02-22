@@ -3,6 +3,7 @@ import operator
 import cv2 as cv
 from glob import glob
 import os
+import time
 
 
 model = predict.load_model('nsfw.299x299.h5')
@@ -16,7 +17,7 @@ videos_list = glob('C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video
 result_statement = []
 column_a, column_b = [], []
 
-
+start = time.perf_counter()
 for index, video in enumerate(videos_list[:10]):
     vidObj = cv.VideoCapture(video)
     video_file_name = (videos_list[index].split('\\')[-1]).split('.')[0]
@@ -48,10 +49,14 @@ for index, video in enumerate(videos_list[:10]):
     column_b.append(num_images_in_folder)
     percent_unsafe = round(count_unsafe / num_images_in_folder * 100, 2)
     if percent_unsafe > 50:
-        print(f'"UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+        print(f'{video_file_name} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
     elif (percent_unsafe > 30) & (percent_unsafe <= 50):
-        print(f'"ADMIN HAS TO VERIFY", since percentage of unsafe images: {percent_unsafe}%')
+        print(f'{video_file_name} is categorized as: "ADMIN HAS TO VERIFY", since percentage of unsafe images: {percent_unsafe}%')
     elif (percent_unsafe > 20) & (percent_unsafe <= 30):
-        print(f'"ADMIN CAN VERIFY or IGNORE", since percentage of unsafe images: {percent_unsafe}%')
+        print(f'{video_file_name} is categorized as: "ADMIN CAN VERIFY or IGNORE", since percentage of unsafe images: {percent_unsafe}%')
     else:
-        print(f'"SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+        print(f'{video_file_name} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+
+finish = time.perf_counter()
+
+print(f'Finished in {round(finish-start, 2)} seconds(s) ')
