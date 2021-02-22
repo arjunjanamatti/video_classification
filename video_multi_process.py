@@ -48,19 +48,19 @@ def video_process(video):
     # column_b.append(num_images_in_folder)
     percent_unsafe = round(count_unsafe / num_images_in_folder * 100, 2)
     if percent_unsafe > 50:
-        print(f'"UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+        print(f'{video_file_name} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
     elif (percent_unsafe > 30) & (percent_unsafe <= 50):
-        print(f'"ADMIN HAS TO VERIFY", since percentage of unsafe images: {percent_unsafe}%')
+        print(f'{video_file_name} is categorized as: "ADMIN HAS TO VERIFY", since percentage of unsafe images: {percent_unsafe}%')
     elif (percent_unsafe > 20) & (percent_unsafe <= 30):
-        print(f'"ADMIN CAN VERIFY or IGNORE", since percentage of unsafe images: {percent_unsafe}%')
+        print(f'{video_file_name} is categorized as: "ADMIN CAN VERIFY or IGNORE", since percentage of unsafe images: {percent_unsafe}%')
     else:
-        print(f'"SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
-    pass
+        print(f'{video_file_name} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+
 
 def CheckConcurrent():
     start = time.perf_counter()
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(video_process,videos_list)
+        executor.map(video_process,videos_list[:3])
 
     finish = time.perf_counter()
 
