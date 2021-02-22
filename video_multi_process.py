@@ -13,12 +13,13 @@ image_directory = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_
 frames_directory_name = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/frames_from_videos'
 # getting names of all videos
 # check_videos = input('Enter "safe" to check safe videos and "unsafe" to check unsafe videos: ')
-check_videos = 'safe'
+check_videos = 'unsafe'
 videos_list = glob(f'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/{check_videos}/*')
 
 def video_process(video):
+    percent_unsafe = 0
     vidObj = cv.VideoCapture(video)
-    print(f'Video: {video} ')
+    # print(f'Video: {video} ')
     video_file_name = ((video.split("/")[-1]).split("\\")[-1]).split('.')[0]
     count = 0
     success = 1
@@ -47,6 +48,7 @@ def video_process(video):
     # column_a.append(count_unsafe)
     # column_b.append(num_images_in_folder)
     percent_unsafe = round(count_unsafe / num_images_in_folder * 100, 2)
+    # print(video_file_name, percent_unsafe)
     if percent_unsafe > 50:
         print(f'{video_file_name} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
     elif (percent_unsafe > 30) & (percent_unsafe <= 50):
@@ -60,7 +62,7 @@ def video_process(video):
 def CheckConcurrent():
     start = time.perf_counter()
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(video_process,videos_list[:3])
+        executor.map(video_process,videos_list[:10])
 
     finish = time.perf_counter()
 
@@ -69,3 +71,5 @@ def CheckConcurrent():
 if __name__ == '__main__':
     # check_time()
     CheckConcurrent()
+
+
