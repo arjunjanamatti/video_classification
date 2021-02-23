@@ -233,8 +233,8 @@ def CheckConcurrent():
 
     print(f'Finished in {round(finish-start, 2)} seconds(s) ')
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
     # check_time()
-    # CheckConcurrent()
-check_and_update_empty_directory(videos_list, video_filename_list)
+    CheckConcurrent()
+# check_and_update_empty_directory(videos_list, video_filename_list)
 
