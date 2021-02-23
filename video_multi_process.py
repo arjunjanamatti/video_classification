@@ -7,7 +7,7 @@ import predict
 import operator
 
 model = predict.load_model('nsfw.299x299.h5')
-
+current_main_directory = 'C:/Users/Arjun Janamatti/PycharmProjects/video_classification/'
 image_directory = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/uploads'
 # storing the frames from training videos
 frames_directory_name = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/frames_from_videos'
@@ -145,8 +145,9 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
         video_file_name = remove_punctuations(video_file_name)
         video_file_name = video_file_name.strip()
         if os.listdir(video_file_name):
-            print('File is not empty')
+            print()
         else:
+            print(f'{video_file_name} is empty')
             count = 0
             success = 1
             fps = vidObj.get(cv.CAP_PROP_FPS)
@@ -156,9 +157,13 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
                     count += 1
                     if count % (int(fps) * 2) == 0:
                         # if count % 300 == 0:
-                        cv.imwrite("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
+                        cv.imwrite(f"{video_file_name}/{video_file_name}_frame_{count}.jpg", image)
+                        cv.imshow(winname='trial_image', mat=image)
+                        cv.waitKey(0)
+                        print("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count))
                 except Exception as e:
                     print(f'Exception: {e}')
+
         pass
 
     pass
