@@ -62,7 +62,7 @@ def make_image_directory(video):
             count += 1
             if count % (int(fps) * 2) == 0:
                 # if count % 300 == 0:
-                cv.imwrite("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
+                cv.imwrite("{}\\{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
                 # print(video_file_name, count)
         except Exception as e:
             print(f'Exeception: {e}')
@@ -146,6 +146,8 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
         video_file_name = video_file_name.strip()
         if os.listdir(video_file_name):
             print()
+            if os.path.isdir(video_file_name):
+                print(f'{video_file_name} is existing')
         else:
             print(f'{video_file_name} is empty')
             count = 0
@@ -157,10 +159,14 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
                     count += 1
                     if count % (int(fps) * 2) == 0:
                         # if count % 300 == 0:
-                        cv.imwrite(f"{video_file_name}/{video_file_name}_frame_{count}.jpg", image)
-                        cv.imshow(winname='trial_image', mat=image)
-                        cv.waitKey(0)
-                        print("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count))
+                        # cv.imwrite(f"{video_file_name}\\{video_file_name}_frame_{count}.jpg", image)
+                        # cv.imshow(winname='trial_image', mat=image)
+                        # cv.waitKey(0)
+                        isWritten = cv.imwrite(f"{video_file_name}/{video_file_name}_frame_{count}.jpg", image)
+
+                        if isWritten:
+                            print('Image is successfully saved as file.')
+                        # print("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count))
                 except Exception as e:
                     print(f'Exception: {e}')
 
