@@ -15,7 +15,7 @@ frames_directory_name = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/
 # check_videos = input('Enter "safe" to check safe videos and "unsafe" to check unsafe videos: ')
 check_videos = 'unsafe'
 videos_list = glob(f'C:\\Users\\Arjun Janamatti\\PycharmProjects\\jeeva_project\\video_and_image_classification\\upload_videos\\{check_videos}\\*')
-video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] for video in videos_list]
+video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] for video in videos_list[:10]]
 # print(video_filename_list)
 
 sample_test_list = ["C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/unsafe\\#Open_desi_sexy_video\u200b sexy girl_Hindi sexy video pron video sex video sexy' Blu film xvideose_BF.mp4"]
@@ -139,6 +139,7 @@ def video_process(video):
     #     print(f'{video_file_name} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
 
 def check_and_update_empty_directory(videos_list, video_filename_list):
+    no_jpg_dir_list = []
     for video in videos_list:
         vidObj = cv.VideoCapture(video)
         video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
@@ -146,8 +147,6 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
         video_file_name = video_file_name.strip()
         if os.listdir(video_file_name):
             print()
-            if os.path.isdir(video_file_name):
-                print(f'{video_file_name} is existing')
         else:
             print(f'{video_file_name} is empty')
             count = 0
@@ -159,20 +158,63 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
                     count += 1
                     if count % (int(fps) * 2) == 0:
                         # if count % 300 == 0:
-                        # cv.imwrite(f"{video_file_name}\\{video_file_name}_frame_{count}.jpg", image)
+                        cv.imwrite(f"{video_file_name}/{video_file_name}_frame_{count}.jpg", image)
                         # cv.imshow(winname='trial_image', mat=image)
                         # cv.waitKey(0)
-                        isWritten = cv.imwrite(f"{video_file_name}/{video_file_name}_frame_{count}.jpg", image)
-
-                        if isWritten:
-                            print('Image is successfully saved as file.')
                         # print("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count))
                 except Exception as e:
                     print(f'Exception: {e}')
+        if not os.listdir(video_file_name):
+            no_jpg_dir_list.append(video_file_name)
 
-        pass
+    return no_jpg_dir_list
 
+def for_loop_use_result(no_jpg_dir_list):
+    for video in no_jpg_dir_list:
+        vidObj = cv.VideoCapture(video)
+        video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
+        video_file_name = remove_punctuations(video_file_name)
+        video_file_name = video_file_name.strip()
+        count = 0
+        success = 1
+        fps = vidObj.get(cv.CAP_PROP_FPS)
+        while success:
+            try:
+                success, image = vidObj.read()
+                count += 1
+                if count % (int(fps) * 2) == 0:
+                    # if count % 300 == 0:
+                    cv.imwrite("{}/{}_frame_{}.jpg".format(frames_directory_name, video_file_name, count), image)
+            except:
+                pass
+
+        files = glob('{}/*'.format(frames_directory_name))
+        num_images_in_folder = len(files)
+        print(video_file_name, num_images_in_folder)
+        result = predict.classify(model, '{}/'.format(frames_directory_name))
+        for file in files:
+            os.remove(file)
+        count_unsafe = 0
+        for key in result.keys():
+            if (max(result[key].items(), key=operator.itemgetter(1))[0] == 'porn') or (
+                    max(result[key].items(), key=operator.itemgetter(1))[0] == 'sexy'):
+                count_unsafe += 1
+
+        percent_unsafe = round(count_unsafe / num_images_in_folder * 100, 2)
+        if percent_unsafe > 50:
+            print(
+                f'{video_file_name} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+        elif (percent_unsafe > 30) & (percent_unsafe <= 50):
+            print(
+                f'{video_file_name} is categorized as: "ADMIN HAS TO VERIFY", since percentage of unsafe images: {percent_unsafe}%')
+        elif (percent_unsafe > 20) & (percent_unsafe <= 30):
+            print(
+                f'{video_file_name} is categorized as: "ADMIN CAN VERIFY or IGNORE", since percentage of unsafe images: {percent_unsafe}%')
+        else:
+            print(
+                f'{video_file_name} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
     pass
+
 
 def CheckConcurrent():
     start = time.perf_counter()
@@ -180,10 +222,12 @@ def CheckConcurrent():
     #     executor.map(video_process,videos_list[:2])
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(make_image_directory,videos_list)
+        executor.map(make_image_directory,videos_list[:10])
+    no_jpg_dir_list = check_and_update_empty_directory(videos_list[:10], video_filename_list)
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        executor.map(video_process_updated,video_filename_list)
 
-    # with concurrent.futures.ProcessPoolExecutor() as executor:
-    #     executor.map(video_process_updated,video_filename_list[:15])
+    for_loop_use_result(no_jpg_dir_list)
 
     finish = time.perf_counter()
 
