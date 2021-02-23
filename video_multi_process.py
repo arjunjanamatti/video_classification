@@ -138,6 +138,18 @@ def video_process(video):
     # else:
     #     print(f'{video_file_name} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
 
+def check_and_update_empty_directory(videos_list, video_filename_list):
+    for video in videos_list:
+        vidObj = cv.VideoCapture(video)
+        video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
+        video_file_name = remove_punctuations(video_file_name)
+        if os.listdir(video_file_name):
+            print('File is not empty')
+        else:
+            print(f'{video_file_name} directory is empty')
+        pass
+
+    pass
 
 def CheckConcurrent():
     start = time.perf_counter()
@@ -154,8 +166,8 @@ def CheckConcurrent():
 
     print(f'Finished in {round(finish-start, 2)} seconds(s) ')
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
     # check_time()
-    CheckConcurrent()
-
+    # CheckConcurrent()
+check_and_update_empty_directory(videos_list, video_filename_list)
 
