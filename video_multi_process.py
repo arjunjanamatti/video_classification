@@ -20,10 +20,10 @@ video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] f
 
 sample_test_list = ["C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/unsafe\\#Open_desi_sexy_video\u200b sexy girl_Hindi sexy video pron video sex video sexy' Blu film xvideose_BF.mp4"]
 
-print(videos_list)
-
-for file in video_filename_list:
-    print(file)
+# print(videos_list)
+#
+# for file in video_filename_list:
+#     print(file)
 
 def remove_punctuations(string):
     # define punctuation
@@ -143,10 +143,22 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
         vidObj = cv.VideoCapture(video)
         video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
         video_file_name = remove_punctuations(video_file_name)
+        video_file_name = video_file_name.strip()
         if os.listdir(video_file_name):
             print('File is not empty')
         else:
-            print(f'{video_file_name} directory is empty')
+            count = 0
+            success = 1
+            fps = vidObj.get(cv.CAP_PROP_FPS)
+            while success:
+                try:
+                    success, image = vidObj.read()
+                    count += 1
+                    if count % (int(fps) * 2) == 0:
+                        # if count % 300 == 0:
+                        cv.imwrite("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
+                except:
+                    pass
         pass
 
     pass
