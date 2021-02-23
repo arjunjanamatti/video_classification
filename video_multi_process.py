@@ -14,13 +14,39 @@ frames_directory_name = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/
 # getting names of all videos
 # check_videos = input('Enter "safe" to check safe videos and "unsafe" to check unsafe videos: ')
 check_videos = 'unsafe'
-videos_list = glob(f'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/{check_videos}/*')
-video_filename_list = [((video.split("/")[-1]).split("\\")[-1]).split('.')[0] for video in videos_list]
+videos_list = glob(f'C:\\Users\\Arjun Janamatti\\PycharmProjects\\jeeva_project\\video_and_image_classification\\upload_videos\\{check_videos}\\*')
+video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] for video in videos_list]
 # print(video_filename_list)
+
+sample_test_list = ["C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/unsafe\\#Open_desi_sexy_video\u200b sexy girl_Hindi sexy video pron video sex video sexy' Blu film xvideose_BF.mp4"]
+
+print(videos_list)
+
+for file in video_filename_list:
+    print(file)
+
+def remove_punctuations(string):
+    # define punctuation
+    punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
+
+    my_str = string
+
+    # To take input from the user
+    # my_str = input("Enter a string: ")
+
+    # remove punctuation from the string
+    no_punct = ""
+    for char in my_str:
+        if char not in punctuations:
+            no_punct = no_punct + char
+
+    # display the unpunctuated string
+    return no_punct
 
 def make_image_directory(video):
     vidObj = cv.VideoCapture(video)
-    video_file_name = ((video.split("/")[-1]).split("\\")[-1]).split('.')[0]
+    video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
+    video_file_name = remove_punctuations(video_file_name)
     try:
         os.mkdir(video_file_name)
 
@@ -37,7 +63,7 @@ def make_image_directory(video):
             if count % (int(fps) * 2) == 0:
                 # if count % 300 == 0:
                 cv.imwrite("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
-                # print(video_file_name, image.shape)
+                # print(video_file_name, count)
         except Exception as e:
             print(f'Exeception: {e}')
             pass
@@ -119,10 +145,10 @@ def CheckConcurrent():
     #     executor.map(video_process,videos_list[:2])
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(make_image_directory,videos_list[:15])
+        executor.map(make_image_directory,videos_list)
 
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(video_process_updated,video_filename_list[:15])
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #     executor.map(video_process_updated,video_filename_list[:15])
 
     finish = time.perf_counter()
 
