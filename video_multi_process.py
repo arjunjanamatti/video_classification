@@ -157,8 +157,8 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
                     if count % (int(fps) * 2) == 0:
                         # if count % 300 == 0:
                         cv.imwrite("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
-                except:
-                    pass
+                except Exception as e:
+                    print(f'Exception: {e}')
         pass
 
     pass
