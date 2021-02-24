@@ -5,6 +5,7 @@ from glob import glob
 import concurrent.futures
 import predict
 import operator
+import shutil
 
 model = predict.load_model('nsfw.299x299.h5')
 current_main_directory = 'C:/Users/Arjun Janamatti/PycharmProjects/video_classification/'
@@ -217,6 +218,14 @@ def for_loop_use_result(no_jpg_dir_list):
                 f'{video_file_name} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
     pass
 
+def delete_directories(video_filename_list):
+    for folder_name in video_filename_list:
+        video_file_name = remove_punctuations(folder_name)
+        video_file_name = video_file_name.strip()
+        shutil.rmtree(video_file_name)
+        pass
+
+    pass
 
 def CheckConcurrent():
     start = time.perf_counter()
