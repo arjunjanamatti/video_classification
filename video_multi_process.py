@@ -15,18 +15,12 @@ image_directory = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_
 frames_directory_name = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/frames_from_videos'
 # getting names of all videos
 # check_videos = input('Enter "safe" to check safe videos and "unsafe" to check unsafe videos: ')
-check_videos = 'unsafe'
+check_videos = 'safe'
 videos_main_directory = f'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/{check_videos}/'
 videos_list = glob(f'C:\\Users\\Arjun Janamatti\\PycharmProjects\\jeeva_project\\video_and_image_classification\\upload_videos\\{check_videos}\\*')
-video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] for video in videos_list[:10]]
+video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] for video in videos_list[:15]]
 # print(video_filename_list)
 
-sample_test_list = ["C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/unsafe\\#Open_desi_sexy_video\u200b sexy girl_Hindi sexy video pron video sex video sexy' Blu film xvideose_BF.mp4"]
-
-# print(videos_list)
-#
-# for file in video_filename_list:
-#     print(file)
 
 def remove_punctuations(string):
     # define punctuation
@@ -220,10 +214,15 @@ def for_loop_use_result(no_jpg_dir_list):
     pass
 
 def delete_directories(video_filename_list):
+
     for folder_name in video_filename_list:
-        video_file_name = remove_punctuations(folder_name)
-        video_file_name = video_file_name.strip()
-        shutil.rmtree(video_file_name)
+        try:
+            video_file_name = remove_punctuations(folder_name)
+            video_file_name = video_file_name.strip()
+            shutil.rmtree(video_file_name)
+
+        except Exception as e:
+            pass
 
 
 def CheckConcurrent():
@@ -232,8 +231,8 @@ def CheckConcurrent():
     #     executor.map(video_process,videos_list[:2])
 
     with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(make_image_directory,videos_list[:10])
-    no_jpg_dir_list = check_and_update_empty_directory(videos_list[:10], video_filename_list)
+        executor.map(make_image_directory,videos_list[:15])
+    no_jpg_dir_list = check_and_update_empty_directory(videos_list[:15], video_filename_list)
     with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(video_process_updated,video_filename_list)
     for_loop_use_result(no_jpg_dir_list)
@@ -248,18 +247,3 @@ if __name__ == '__main__':
 # check_and_update_empty_directory(videos_list, video_filename_list)
 
 
-#BreastFeeding Hand Expression  Saving Milk for Baby    BreastFeeding Hand Expression Tips Method 86.67
-# BreastFeeding Hand Expression  Saving Milk for Baby    BreastFeeding Hand Expression Tips Method is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 86.67%
-# Hot Romantic Video  Suhaag Raat  Sexy Video  Hot Web Series  Sex Video  Devar Bhabhi Ki Chudai 83.87
-# Hot Romantic Video  Suhaag Raat  Sexy Video  Hot Web Series  Sex Video  Devar Bhabhi Ki Chudai is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 83.87%
-# Devar Hot Blue Sexy Blue Film Hot And Sexy Video 2021 Bhabhi Devar Hot Movie Hot Desi Indian 51.03
-# Devar Hot Blue Sexy Blue Film Hot And Sexy Video 2021 Bhabhi Devar Hot Movie Hot Desi Indian is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 51.03%
-# Shilpa Shetty  Best Romantic Scenes  Hindi Movie SHILPA THE BIGGDON 720p HD 51.82
-# Shilpa Shetty  Best Romantic Scenes  Hindi Movie SHILPA THE BIGGDON 720p HD is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 51.82%
-# Best New Teacher And Student Sex Scene Full Web Series 2020 52.48
-# Best New Teacher And Student Sex Scene Full Web Series 2020 is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 52.48%
-# bangla hot video 2020 sex free video xx 2020 HD hot videobangla new xx videos 2020 Part 1 17.02
-# bangla hot video 2020 sex free video xx 2020 HD hot videobangla new xx videos 2020 Part 1 is categorized as: "SAFE VIDEO", since percentage of unsafe images: 17.02%
-# Best Ullu Web Series Romantic sex Scene  Hot Scene Full Hd Movie  Sexy Kiss Video 55.05
-# Best Ullu Web Series Romantic sex Scene  Hot Scene Full Hd Movie  Sexy Kiss Video is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 55.05%
-# #
