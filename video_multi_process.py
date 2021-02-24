@@ -169,6 +169,7 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
         #             print(f'Exception: {e}')
         if not os.listdir(video_file_name):
             no_jpg_dir_list.append(video)
+            shutil.rmtree(video_file_name)
 
     return no_jpg_dir_list
 
@@ -223,7 +224,6 @@ def delete_directories(video_filename_list):
         video_file_name = remove_punctuations(folder_name)
         video_file_name = video_file_name.strip()
         shutil.rmtree(video_file_name)
-        pass
 
     pass
 
