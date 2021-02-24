@@ -231,7 +231,7 @@ def CheckConcurrent():
     # with concurrent.futures.ProcessPoolExecutor() as executor:
     #     executor.map(video_process_updated,video_filename_list)
     print('List:', no_jpg_dir_list)
-    for_loop_use_result(no_jpg_dir_list)
+    # for_loop_use_result(no_jpg_dir_list)
 
     finish = time.perf_counter()
 
