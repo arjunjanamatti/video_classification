@@ -230,10 +230,10 @@ def CheckConcurrent():
     # with concurrent.futures.ProcessPoolExecutor() as executor:
     #     executor.map(video_process,videos_list[:2])
 
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(make_image_directory,videos_list[:15])
     no_jpg_dir_list = check_and_update_empty_directory(videos_list[:15], video_filename_list)
-    with concurrent.futures.ThreadPoolExecutor() as executor:
+    with concurrent.futures.ProcessPoolExecutor() as executor:
         executor.map(video_process_updated,video_filename_list)
     for_loop_use_result(no_jpg_dir_list)
     delete_directories(video_filename_list)
