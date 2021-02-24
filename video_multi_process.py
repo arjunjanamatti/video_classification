@@ -85,7 +85,6 @@ def video_process_updated(video):
                 max(result[key].items(), key=operator.itemgetter(1))[0] == 'sexy'):
             count_unsafe += 1
     percent_unsafe = round(count_unsafe / num_images_in_folder * 100, 2)
-    print(video, percent_unsafe)
     if percent_unsafe > 50:
         print(f'{video} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
     elif (percent_unsafe > 30) & (percent_unsafe <= 50):
@@ -168,14 +167,14 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
         #         except Exception as e:
         #             print(f'Exception: {e}')
         if not os.listdir(video_file_name):
-            no_jpg_dir_list.append(video_file_name)
+            no_jpg_dir_list.append(video)
 
     return no_jpg_dir_list
 
 def for_loop_use_result(no_jpg_dir_list):
     for video in no_jpg_dir_list:
-        print('Video path in for loop: ', videos_main_directory+video)
-        vidObj = cv.VideoCapture(videos_main_directory+video+'.mp4')
+        # print('Video path in for loop: ', videos_main_directory+video)
+        vidObj = cv.VideoCapture(video)
         video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
         video_file_name = remove_punctuations(video_file_name)
         video_file_name = video_file_name.strip()
@@ -194,7 +193,6 @@ def for_loop_use_result(no_jpg_dir_list):
 
         files = glob('{}/*'.format(frames_directory_name))
         num_images_in_folder = len(files)
-        print(video_file_name, num_images_in_folder)
         result = predict.classify(model, '{}/'.format(frames_directory_name))
         for file in files:
             os.remove(file)
@@ -225,13 +223,12 @@ def CheckConcurrent():
     # with concurrent.futures.ProcessPoolExecutor() as executor:
     #     executor.map(video_process,videos_list[:2])
 
-    # with concurrent.futures.ProcessPoolExecutor() as executor:
-    #     executor.map(make_image_directory,videos_list[:10])
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        executor.map(make_image_directory,videos_list[:10])
     no_jpg_dir_list = check_and_update_empty_directory(videos_list[:10], video_filename_list)
-    # with concurrent.futures.ProcessPoolExecutor() as executor:
-    #     executor.map(video_process_updated,video_filename_list)
-    print('List:', no_jpg_dir_list)
-    # for_loop_use_result(no_jpg_dir_list)
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        executor.map(video_process_updated,video_filename_list)
+    for_loop_use_result(no_jpg_dir_list)
 
     finish = time.perf_counter()
 
