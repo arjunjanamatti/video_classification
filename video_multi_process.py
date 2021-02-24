@@ -8,12 +8,14 @@ import operator
 
 model = predict.load_model('nsfw.299x299.h5')
 current_main_directory = 'C:/Users/Arjun Janamatti/PycharmProjects/video_classification/'
+
 image_directory = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/uploads'
 # storing the frames from training videos
 frames_directory_name = 'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/frames_from_videos'
 # getting names of all videos
 # check_videos = input('Enter "safe" to check safe videos and "unsafe" to check unsafe videos: ')
 check_videos = 'unsafe'
+videos_main_directory = f'C:/Users/Arjun Janamatti/PycharmProjects/jeeva_project/video_and_image_classification/upload_videos/{check_videos}/'
 videos_list = glob(f'C:\\Users\\Arjun Janamatti\\PycharmProjects\\jeeva_project\\video_and_image_classification\\upload_videos\\{check_videos}\\*')
 video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] for video in videos_list[:10]]
 # print(video_filename_list)
@@ -70,6 +72,7 @@ def make_image_directory(video):
 
 
 def video_process_updated(video):
+    video = remove_punctuations(video)
     files = glob('{}/*'.format(video))
     # print(files)
     # for file in files:
@@ -145,25 +148,25 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
         video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
         video_file_name = remove_punctuations(video_file_name)
         video_file_name = video_file_name.strip()
-        if os.listdir(video_file_name):
-            print()
-        else:
-            print(f'{video_file_name} is empty')
-            count = 0
-            success = 1
-            fps = vidObj.get(cv.CAP_PROP_FPS)
-            while success:
-                try:
-                    success, image = vidObj.read()
-                    count += 1
-                    if count % (int(fps) * 2) == 0:
-                        # if count % 300 == 0:
-                        cv.imwrite(f"{video_file_name}/{video_file_name}_frame_{count}.jpg", image)
-                        # cv.imshow(winname='trial_image', mat=image)
-                        # cv.waitKey(0)
-                        # print("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count))
-                except Exception as e:
-                    print(f'Exception: {e}')
+        # if os.listdir(video_file_name):
+        #     print()
+        # else:
+        #     print(f'{video_file_name} is empty')
+        #     count = 0
+        #     success = 1
+        #     fps = vidObj.get(cv.CAP_PROP_FPS)
+        #     while success:
+        #         try:
+        #             success, image = vidObj.read()
+        #             count += 1
+        #             if count % (int(fps) * 2) == 0:
+        #                 # if count % 300 == 0:
+        #                 cv.imwrite(f"{video_file_name}/{video_file_name}_frame_{count}.jpg", image)
+        #                 # cv.imshow(winname='trial_image', mat=image)
+        #                 # cv.waitKey(0)
+        #                 # print("{}/{}_frame_{}.jpg".format(video_file_name, video_file_name, count))
+        #         except Exception as e:
+        #             print(f'Exception: {e}')
         if not os.listdir(video_file_name):
             no_jpg_dir_list.append(video_file_name)
 
@@ -171,7 +174,8 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
 
 def for_loop_use_result(no_jpg_dir_list):
     for video in no_jpg_dir_list:
-        vidObj = cv.VideoCapture(video)
+        print('Video path in for loop: ', videos_main_directory+video)
+        vidObj = cv.VideoCapture(videos_main_directory+video+'.mp4')
         video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
         video_file_name = remove_punctuations(video_file_name)
         video_file_name = video_file_name.strip()
@@ -221,12 +225,12 @@ def CheckConcurrent():
     # with concurrent.futures.ProcessPoolExecutor() as executor:
     #     executor.map(video_process,videos_list[:2])
 
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(make_image_directory,videos_list[:10])
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #     executor.map(make_image_directory,videos_list[:10])
     no_jpg_dir_list = check_and_update_empty_directory(videos_list[:10], video_filename_list)
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        executor.map(video_process_updated,video_filename_list)
-
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #     executor.map(video_process_updated,video_filename_list)
+    print('List:', no_jpg_dir_list)
     for_loop_use_result(no_jpg_dir_list)
 
     finish = time.perf_counter()
@@ -238,3 +242,19 @@ if __name__ == '__main__':
     CheckConcurrent()
 # check_and_update_empty_directory(videos_list, video_filename_list)
 
+
+#BreastFeeding Hand Expression  Saving Milk for Baby    BreastFeeding Hand Expression Tips Method 86.67
+# BreastFeeding Hand Expression  Saving Milk for Baby    BreastFeeding Hand Expression Tips Method is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 86.67%
+# Hot Romantic Video  Suhaag Raat  Sexy Video  Hot Web Series  Sex Video  Devar Bhabhi Ki Chudai 83.87
+# Hot Romantic Video  Suhaag Raat  Sexy Video  Hot Web Series  Sex Video  Devar Bhabhi Ki Chudai is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 83.87%
+# Devar Hot Blue Sexy Blue Film Hot And Sexy Video 2021 Bhabhi Devar Hot Movie Hot Desi Indian 51.03
+# Devar Hot Blue Sexy Blue Film Hot And Sexy Video 2021 Bhabhi Devar Hot Movie Hot Desi Indian is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 51.03%
+# Shilpa Shetty  Best Romantic Scenes  Hindi Movie SHILPA THE BIGGDON 720p HD 51.82
+# Shilpa Shetty  Best Romantic Scenes  Hindi Movie SHILPA THE BIGGDON 720p HD is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 51.82%
+# Best New Teacher And Student Sex Scene Full Web Series 2020 52.48
+# Best New Teacher And Student Sex Scene Full Web Series 2020 is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 52.48%
+# bangla hot video 2020 sex free video xx 2020 HD hot videobangla new xx videos 2020 Part 1 17.02
+# bangla hot video 2020 sex free video xx 2020 HD hot videobangla new xx videos 2020 Part 1 is categorized as: "SAFE VIDEO", since percentage of unsafe images: 17.02%
+# Best Ullu Web Series Romantic sex Scene  Hot Scene Full Hd Movie  Sexy Kiss Video 55.05
+# Best Ullu Web Series Romantic sex Scene  Hot Scene Full Hd Movie  Sexy Kiss Video is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: 55.05%
+# #
