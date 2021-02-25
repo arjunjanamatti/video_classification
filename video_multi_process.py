@@ -244,8 +244,4 @@ def CheckConcurrent():
 if __name__ == '__main__':
     # check_time()
     CheckConcurrent()
-# check_and_update_empty_directory(videos_list, video_filename_list)
 
-
-# Multiprocess took around 2703 seconds for 15 video files
-# Multithread took around 2816 seconds for 15 video files
