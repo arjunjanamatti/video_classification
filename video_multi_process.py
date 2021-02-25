@@ -23,7 +23,6 @@ video_filename_list = [((video.split("\\")[-1]).split("\\")[-1]).split('.')[0] f
 
 
 def remove_punctuations(string):
-    # define punctuation
     punctuations = '''!()-[]{};:'"\,<>./?@#$%^&*_~'''
 
     my_str = string
@@ -160,7 +159,6 @@ def check_and_update_empty_directory(videos_list, video_filename_list):
 
 def for_loop_use_result(no_jpg_dir_list):
     for video in no_jpg_dir_list:
-        # print('Video path in for loop: ', videos_main_directory+video)
         vidObj = cv.VideoCapture(video)
         video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
         video_file_name = remove_punctuations(video_file_name)
@@ -233,6 +231,5 @@ def CheckConcurrent():
     print(f'Finished in {round(finish-start, 2)} seconds(s) ')
 
 if __name__ == '__main__':
-    # check_time()
     CheckConcurrent()
 
