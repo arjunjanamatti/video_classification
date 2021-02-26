@@ -12,7 +12,7 @@ def get_codecs():
     # x = subprocess.check_output(["C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe", "-i", "sample_video.mp4",
     #                              "-vcodec", "msmpeg4v2", "-acodec", "copy", "sample_video_1.mp4"],shell=True)
     x = subprocess.check_output(["C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe", "-i", "sample.mp4",
-                                 "-vcodec", "libx264", "-crf", "35", "sample_1.mp4"],shell=True)
+                                 "-vcodec", "libx264", "-crf", "45", "sample_1.mp4"],shell=True)
     finish = time.perf_counter()
 
     print(f'Finished in {round(finish-start, 2)} seconds(s) ')
@@ -20,8 +20,8 @@ def get_codecs():
     # for e in x:
     #     print(e)
 
-
-# ffmpeg -i input.mp4 -vcodec libx264 -crf 28 output.mp4 -- 50.2mb [reduced file size] time taken is 477 seconds
+# original video: 381mb, -crf 35, reduced_video_size: 100mb , time_taken: 1003 seconds
+# ffmpeg -i input.mp4 -vcodec libx264 -crf 35 output.mp4 -- 50.2mb [reduced file size] time taken is 477 seconds
 # ffmpeg -i input.mp4 -vcodec libx264 -crf 28 output.mp4 -- 78.6mb [reduced file size] time taken is 500 seconds
 # ffmpeg -i input.mp4 -vcodec libx264 -crf 18 output.mp4 -- 172mb
 # ffmpeg -i input.mp4 -vcodec libx264 -crf 20 output.mp4 -- 142mb
