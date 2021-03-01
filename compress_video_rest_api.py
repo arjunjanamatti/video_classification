@@ -30,17 +30,19 @@ def Classification():
     if request.method == 'POST':
         file = request.files['file']
         print(file.filename)
-        file_path = 'video_uploads'+ secure_filename(file.filename)
-        file.save(file_path)
+        upload_file_path = 'compress_video_upload/'+ secure_filename(file.filename)
+        file.save(upload_file_path)
 
         # start = time.perf_counter()
-        command = [ffmpeg_location, "-i", f"{file_path}", "-vcodec", "libx264", "-crf", "45", "temp_output.mp4"]
+        command = [ffmpeg_location, "-i", f"{upload_file_path}", "-vcodec", "libx264", "-crf", "45", "compress_video_output/temp_output.mp4"]
         compress_video = subprocess.check_output(command, shell=True)
         # finish = time.perf_counter()
         # print(f'Finished in {round(finish-start, 2)} seconds(s) ')
-        with open("temp_output.mp4", "rb") as videoFile:
+        with open("compress_video_output/temp_output.mp4", "rb") as videoFile:
             text = base64.b64encode(videoFile.read()).decode('utf-8')
             print(text)
+        shutil.rmtree("compress_video_upload")
+        shutil.rmtree("compress_video_output")
 
         return {"videoBase64": text}
 
