@@ -4,19 +4,23 @@ import base64
 import os
 import subprocess
 from werkzeug.utils import secure_filename
+import shutil
 
 
-def assure_path_exists(path):
-    dir = os.path.dirname(path)
-    if not os.path.exists(dir):
-        os.makedirs(dir)
+def assure_path_exists(upload_path, output_path):
+    dir_upload = os.path.dirname(upload_path)
+    if not os.path.exists(dir_upload):
+        os.makedirs(dir_upload)
+    dir_output = os.path.dirname(output_path)
+    if not os.path.exists(dir_output):
+        os.makedirs(dir_output)
 
 
-assure_path_exists("video_uploads/")
+assure_path_exists("compress_video_upload/", "compress_video_output/")
 
 app = Flask(__name__)
 
-app.config['UPLOAD_FOLDER'] = "video_uploads"
+app.config['UPLOAD_FOLDER'] = "compress_video_upload"
 
 ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe"
 
