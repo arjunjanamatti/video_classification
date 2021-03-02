@@ -1,0 +1,7 @@
+dist/
+*.egg-info
+build/
+**/__init__.pyc
+**/__pycache__
+*.mp4
+*.tdv
