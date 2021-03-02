@@ -91,6 +91,7 @@ def process_video(filename, output_file='1999.mp4'):
 
 
 def main():
+    print(sys.argv)
     if(len(sys.argv) <= 3):
         return print("Usage: compress.py [i|v] [input filename] [output filename]\
                 \n       i -> image, v -> video")
