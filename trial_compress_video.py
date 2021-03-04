@@ -35,8 +35,9 @@ def get_codecs():
                  "-i", "sample.mp4", "-vcodec", "libx264", "-crf", "40", "-preset", "ultrafast","sample_1.mp4"]
     command_9 = ["C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe",
                  "-i", "sample.mp4", "-vcodec", "libx264", "-crf", "30", "-preset", "fast","sample_1.mp4"]
+    # # slow, ultrafast, superfast, veryfast, faster, fast, medium, slow, slower, veryslow
     command_10 = ["C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe",
-                 "-i", "sample.mp4", "-vcodec", "libx264", "-crf", "30", "sample_1.mp4"]
+                 "-i", "videos_folder/big_video.mp4", "-vcodec", "libx264", "-crf", "30","-preset", "fast","videos_folder/big_video_fast.mp4"]
     compress_video = subprocess.check_output(command_10, shell=True)
     finish = time.perf_counter()
 
@@ -78,9 +79,16 @@ def compress_wit_base_64():
     pass
 
 
-compress_wit_base_64()
-# get_codecs()
+# compress_wit_base_64()
+get_codecs()
 
+# medium video finished in 406 seconds
+# big video finished in 1811 seconds
+# big video ultrafast finished in 265 seconds reduced to 607mb
+# big video superfast finished in 485 seconds reduced to 70.2mb
+# big video veryfast finished in 798 seconds reduced to 64 mb
+# big video faster finished in 1494 seconds reduced to 80 mb
+# big video fast finished in 1089 seconds reduced to 86 mb
 # # original video: 381mb, command_10, reduced_video_size: 155mb , time_taken: 1200 seconds
 # # original video: 381mb, command_9, reduced_video_size: 157mb , time_taken: 986 seconds
 # # original video: 381mb, command_8, reduced_video_size: 115mb , time_taken: 169 seconds
