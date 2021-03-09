@@ -9,10 +9,13 @@ from glob import glob
 import predict
 import operator
 import shutil
+from flask import Flask, request, jsonify
 
 MODEL_PATH = "deepspeech-0.9.3-models.pbmm"
 SCORER_PATH = "deepspeech-0.9.3-models.scorer"
 model = predict.load_model('nsfw.299x299.h5')
+
+app = Flask(__name__)
 
 class speech_to_text:
     def __init__(self, video_file):
@@ -118,10 +121,27 @@ class speech_to_text:
         print(f'Finished in {round(finish - start, 2)} seconds(s) ')
         return text_result, safe_image_result
 
-file = 'sample.mp4'
-check = speech_to_text(file)
-# print(check.TextResult())
-# check.MakeImageDirectory()
-text_result, safe_image_result = check.TextAndClassity()
-print(text_result)
-print(safe_image_result)
+# file = 'sample.mp4'
+# check = speech_to_text(file)
+# # print(check.TextResult())
+# # check.MakeImageDirectory()
+# text_result, safe_image_result = check.TextAndClassity()
+# print(text_result)
+# print(safe_image_result)
+
+@app.route('/video/upload', methods=['POST'])
+def Classification():
+    if request.method == 'POST':
+        file = request.files['file']
+        print('Filename: ',file.filename)
+        check = speech_to_text(file.filename)
+        # print(check.TextResult())
+        # check.MakeImageDirectory()
+        text_result, safe_image_result = check.TextAndClassity()
+
+        return {"Transcript_result": text_result,
+                'Video content result': safe_image_result}
+
+
+if __name__ == "__main__":
+    app.run()
