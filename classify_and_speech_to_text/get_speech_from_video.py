@@ -56,7 +56,6 @@ class speech_to_text:
         return f'{self.video_file} has approximately {len(profane_words_list)} number of profane words and profane words in speech are {profane_words_list}!!!'
         pass
 
-    pass
 
 file = 'sample.mp4'
 check = speech_to_text(file)
