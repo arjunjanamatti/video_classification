@@ -142,15 +142,13 @@ def Main():
         file = request.files['file']
         print('Filename: ',file.filename)
         check = speech_to_text(file.filename)
-        # # print(check.TextResult())
-        # # check.MakeImageDirectory()
-        # text_result, safe_image_result = check.TextAndClassity()
-        #
-        # return {"Transcript_result": text_result,
-        #         'Video content result': safe_image_result}
+        # print(check.TextResult())
+        # check.MakeImageDirectory()
+        text_result, safe_image_result, text_base64 = check.TextAndClassity()
 
-        text = check.CompressVideo()
-        return {"videoBase64": text}
+        return {"Transcript_result": text_result,
+                'Video content result': safe_image_result,
+                "videoBase64": text_base64}
 
 
 
