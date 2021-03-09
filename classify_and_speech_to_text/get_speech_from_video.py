@@ -85,10 +85,10 @@ class speech_to_text:
                 pass
 
     def VideoClassifyResult(self):
+        self.video_file_name = self.video_file.split('.')[0]
         files = glob('{}/*'.format(self.video_file_name))
         num_images_in_folder = len(files)
-        print(num_images_in_folder)
-        result = predict.classify(model, '{}/'.format(self.video_file))
+        result = predict.classify(model, '{}/'.format(self.video_file_name))
         count_unsafe = 0
         for key in result.keys():
             if (max(result[key].items(), key=operator.itemgetter(1))[0] == 'porn') or (
@@ -96,17 +96,21 @@ class speech_to_text:
                 count_unsafe += 1
         percent_unsafe = round(count_unsafe / num_images_in_folder * 100, 2)
         if percent_unsafe > 50:
-            print(f'{self.video_file} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+            return (f'{self.video_file} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
         elif (percent_unsafe > 30) & (percent_unsafe <= 50):
-            print(
+            return (
                 f'{self.video_file} is categorized as: "ADMIN HAS TO VERIFY", since percentage of unsafe images: {percent_unsafe}%')
         elif (percent_unsafe > 20) & (percent_unsafe <= 30):
-            print(
+            return (
                 f'{self.video_file} is categorized as: "ADMIN CAN VERIFY or IGNORE", since percentage of unsafe images: {percent_unsafe}%')
         else:
-            print(f'{self.video_file} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+            return (f'{self.video_file} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
         pass
 
+    def TextAndClassity(self):
+        text_result = self.TextResult()
+        safe_image_result = self.VideoClassifyResult()
+        return text_result, safe_image_result
 
 file = 'sample.mp4'
 check = speech_to_text(file)
