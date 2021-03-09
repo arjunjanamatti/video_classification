@@ -9,11 +9,12 @@ from glob import glob
 import predict
 import operator
 import shutil
-from flask import Flask, request, jsonify
+from flask import Flask, request
 
 MODEL_PATH = "deepspeech-0.9.3-models.pbmm"
 SCORER_PATH = "deepspeech-0.9.3-models.scorer"
 model = predict.load_model('nsfw.299x299.h5')
+ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe"
 
 app = Flask(__name__)
 
@@ -22,7 +23,6 @@ class speech_to_text:
         self.video_file = video_file
 
     def VideoToText(self):
-        ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe"
 
         video = self.video_file
 
@@ -64,8 +64,6 @@ class speech_to_text:
 
     def MakeImageDirectory(self):
         vidObj = cv.VideoCapture(self.video_file)
-        # video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
-        # video_file_name = remove_punctuations(video_file_name)
         self.video_file_name = self.video_file.split('.')[0]
         try:
             os.mkdir(self.video_file_name)
@@ -121,13 +119,6 @@ class speech_to_text:
         print(f'Finished in {round(finish - start, 2)} seconds(s) ')
         return text_result, safe_image_result
 
-# file = 'sample.mp4'
-# check = speech_to_text(file)
-# # print(check.TextResult())
-# # check.MakeImageDirectory()
-# text_result, safe_image_result = check.TextAndClassity()
-# print(text_result)
-# print(safe_image_result)
 
 @app.route('/video/upload', methods=['POST'])
 def Classification():
