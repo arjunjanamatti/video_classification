@@ -11,6 +11,27 @@ SCORER_PATH = "deepspeech-0.9.3-models.scorer"
 
 
 class speech_to_text:
+    def __init__(self, video_file):
+        self.video_file = video_file
+
+    def VideoToText(self):
+        ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe"
+
+        video = self.video_file
+        start = time.perf_counter()
+        command = [ffmpeg_location, "-i", f"{video}", "-ac", "1", "-ab", "16000", "-ar", "16000", "temp_output.wav"]
+        video_to_audio = subprocess.check_output(command, shell=True)
+
+        audio_filename = 'temp_output.wav'
+        proc = subprocess.Popen(
+            f"deepspeech --model {MODEL_PATH}  --audio " + audio_filename,
+            shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0]
+        finish = time.perf_counter()
+        os.remove("temp_output.wav")
+        print(f'Finished in {round(finish - start, 2)} seconds(s) ')
+        return output
+
     pass
 
 def VideoToText(filename):
