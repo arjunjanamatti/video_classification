@@ -8,6 +8,7 @@ import cv2 as cv
 from glob import glob
 import predict
 import operator
+import shutil
 
 MODEL_PATH = "deepspeech-0.9.3-models.pbmm"
 SCORER_PATH = "deepspeech-0.9.3-models.scorer"
@@ -21,7 +22,7 @@ class speech_to_text:
         ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe"
 
         video = self.video_file
-        start = time.perf_counter()
+
         command = [ffmpeg_location, "-i", f"{video}", "-ac", "1", "-ab", "16000", "-ar", "16000", "temp_output.wav"]
         video_to_audio = subprocess.check_output(command, shell=True)
 
@@ -30,9 +31,8 @@ class speech_to_text:
             f"deepspeech --model {MODEL_PATH}  --audio " + audio_filename,
             shell=True, stdout=subprocess.PIPE, )
         output = proc.communicate()[0]
-        finish = time.perf_counter()
         os.remove("temp_output.wav")
-        print(f'Finished in {round(finish - start, 2)} seconds(s) ')
+
         return output
 
     def ProfaneWordList(self):
@@ -85,6 +85,7 @@ class speech_to_text:
                 pass
 
     def VideoClassifyResult(self):
+        self.MakeImageDirectory()
         self.video_file_name = self.video_file.split('.')[0]
         files = glob('{}/*'.format(self.video_file_name))
         num_images_in_folder = len(files)
@@ -108,12 +109,19 @@ class speech_to_text:
         pass
 
     def TextAndClassity(self):
+        start = time.perf_counter()
         text_result = self.TextResult()
         safe_image_result = self.VideoClassifyResult()
+        # delete the directory created to store the frames
+        shutil.rmtree(self.video_file_name)
+        finish = time.perf_counter()
+        print(f'Finished in {round(finish - start, 2)} seconds(s) ')
         return text_result, safe_image_result
 
 file = 'sample.mp4'
 check = speech_to_text(file)
 # print(check.TextResult())
 # check.MakeImageDirectory()
-check.VideoClassifyResult()
+text_result, safe_image_result = check.TextAndClassity()
+print(text_result)
+print(safe_image_result)
