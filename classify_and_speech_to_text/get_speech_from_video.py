@@ -10,6 +10,8 @@ import predict
 import operator
 import shutil
 from flask import Flask, request
+import base64
+
 
 MODEL_PATH = "deepspeech-0.9.3-models.pbmm"
 SCORER_PATH = "deepspeech-0.9.3-models.scorer"
@@ -21,6 +23,7 @@ app = Flask(__name__)
 class speech_to_text:
     def __init__(self, video_file):
         self.video_file = video_file
+        self.video_file_name = self.video_file.split('.')[0]
 
     def VideoToText(self):
 
@@ -109,37 +112,50 @@ class speech_to_text:
             return (f'{self.video_file} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
         pass
 
-    def TextAndClassity(self):
-        start = time.perf_counter()
-        text_result = self.TextResult()
-        safe_image_result = self.VideoClassifyResult()
-        # delete the directory created to store the frames
-        shutil.rmtree(self.video_file_name)
-        finish = time.perf_counter()
-        print(f'Finished in {round(finish - start, 2)} seconds(s) ')
-        return text_result, safe_image_result
-
     def CompressVideo(self):
         command_10 = [f"{ffmpeg_location}",
                       "-i", f"{self.video_file}", "-vcodec", "libx264", "-crf", "30", "-preset", "fast",
                       f"{self.video_file_name}_compress.mp4"]
         compress_video = subprocess.check_output(command_10, shell=True)
-        pass
+        with open( f"{self.video_file_name}_compress.mp4", "rb") as videoFile:
+            text = base64.b64encode(videoFile.read()).decode('utf-8')
+        os.remove(f"{self.video_file_name}_compress.mp4")
+        return text
+
+    def TextAndClassity(self):
+        start = time.perf_counter()
+        text_result = self.TextResult()
+        safe_image_result = self.VideoClassifyResult()
+        compress_video_base64 = self.CompressVideo()
+        # delete the directory created to store the frames
+        shutil.rmtree(self.video_file_name)
+        finish = time.perf_counter()
+        print(f'Finished in {round(finish - start, 2)} seconds(s) ')
+        return text_result, safe_image_result, compress_video_base64
+
+
 
 
 @app.route('/video/upload', methods=['POST'])
-def Classification():
+def Main():
     if request.method == 'POST':
         file = request.files['file']
         print('Filename: ',file.filename)
         check = speech_to_text(file.filename)
-        # print(check.TextResult())
-        # check.MakeImageDirectory()
-        text_result, safe_image_result = check.TextAndClassity()
+        # # print(check.TextResult())
+        # # check.MakeImageDirectory()
+        # text_result, safe_image_result = check.TextAndClassity()
+        #
+        # return {"Transcript_result": text_result,
+        #         'Video content result': safe_image_result}
 
-        return {"Transcript_result": text_result,
-                'Video content result': safe_image_result}
+        text = check.CompressVideo()
+        return {"videoBase64": text}
+
+
 
 
 if __name__ == "__main__":
     app.run()
+# filename = 'sample'
+# print(f"{filename}_compress.mp4")
