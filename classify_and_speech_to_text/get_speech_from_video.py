@@ -5,10 +5,13 @@ import pandas as pd
 import pickle
 import os
 import cv2 as cv
+from glob import glob
+import predict
+import operator
 
 MODEL_PATH = "deepspeech-0.9.3-models.pbmm"
 SCORER_PATH = "deepspeech-0.9.3-models.scorer"
-
+model = predict.load_model('nsfw.299x299.h5')
 
 class speech_to_text:
     def __init__(self, video_file):
@@ -60,9 +63,9 @@ class speech_to_text:
         vidObj = cv.VideoCapture(self.video_file)
         # video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
         # video_file_name = remove_punctuations(video_file_name)
-        video_file_name = self.video_file.split('.')[0]
+        self.video_file_name = self.video_file.split('.')[0]
         try:
-            os.mkdir(video_file_name)
+            os.mkdir(self.video_file_name)
 
         except Exception as e:
             print(f'Execption in making directory: {e}')
@@ -76,11 +79,37 @@ class speech_to_text:
                 count += 1
                 if count % (int(fps) * 2) == 0:
                     # if count % 300 == 0:
-                    cv.imwrite("{}\\{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
+                    cv.imwrite("{}\\{}_frame_{}.jpg".format(self.video_file_name, self.video_file_name, count), image)
             except Exception as e:
                 print(f'Exeception: {e}')
                 pass
 
+    def VideoClassifyResult(self):
+        files = glob('{}/*'.format(self.video_file_name))
+        num_images_in_folder = len(files)
+        print(num_images_in_folder)
+        result = predict.classify(model, '{}/'.format(self.video_file))
+        count_unsafe = 0
+        for key in result.keys():
+            if (max(result[key].items(), key=operator.itemgetter(1))[0] == 'porn') or (
+                    max(result[key].items(), key=operator.itemgetter(1))[0] == 'sexy'):
+                count_unsafe += 1
+        percent_unsafe = round(count_unsafe / num_images_in_folder * 100, 2)
+        if percent_unsafe > 50:
+            print(f'{self.video_file} is categorized as: "UNSAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+        elif (percent_unsafe > 30) & (percent_unsafe <= 50):
+            print(
+                f'{self.video_file} is categorized as: "ADMIN HAS TO VERIFY", since percentage of unsafe images: {percent_unsafe}%')
+        elif (percent_unsafe > 20) & (percent_unsafe <= 30):
+            print(
+                f'{self.video_file} is categorized as: "ADMIN CAN VERIFY or IGNORE", since percentage of unsafe images: {percent_unsafe}%')
+        else:
+            print(f'{self.video_file} is categorized as: "SAFE VIDEO", since percentage of unsafe images: {percent_unsafe}%')
+        pass
+
+
 file = 'sample.mp4'
 check = speech_to_text(file)
-print(check.TextResult())
+# print(check.TextResult())
+# check.MakeImageDirectory()
+check.VideoClassifyResult()
