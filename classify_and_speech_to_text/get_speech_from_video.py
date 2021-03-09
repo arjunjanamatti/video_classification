@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pickle
 import os
-from nltk.tokenize import sent_tokenize
+import cv2 as cv
 
 MODEL_PATH = "deepspeech-0.9.3-models.pbmm"
 SCORER_PATH = "deepspeech-0.9.3-models.scorer"
@@ -45,7 +45,7 @@ class speech_to_text:
 
         return word_list_df
 
-    def MainResult(self):
+    def TextResult(self):
         video_text = self.VideoToText()
         video_text = video_text.decode('utf-8')
         word_list_df = self.ProfaneWordList()
@@ -56,7 +56,31 @@ class speech_to_text:
         return f'{self.video_file} has approximately {len(profane_words_list)} number of profane words and profane words in speech are {profane_words_list}!!!'
         pass
 
+    def MakeImageDirectory(self):
+        vidObj = cv.VideoCapture(self.video_file)
+        # video_file_name = ((video.split("\\")[-1]).split("\\")[-1]).split('.')[0]
+        # video_file_name = remove_punctuations(video_file_name)
+        video_file_name = self.video_file.split('.')[0]
+        try:
+            os.mkdir(video_file_name)
+
+        except Exception as e:
+            print(f'Execption in making directory: {e}')
+
+        count = 0
+        success = 1
+        fps = vidObj.get(cv.CAP_PROP_FPS)
+        while success:
+            try:
+                success, image = vidObj.read()
+                count += 1
+                if count % (int(fps) * 2) == 0:
+                    # if count % 300 == 0:
+                    cv.imwrite("{}\\{}_frame_{}.jpg".format(video_file_name, video_file_name, count), image)
+            except Exception as e:
+                print(f'Exeception: {e}')
+                pass
 
 file = 'sample.mp4'
 check = speech_to_text(file)
-print(check.MainResult())
+print(check.TextResult())
