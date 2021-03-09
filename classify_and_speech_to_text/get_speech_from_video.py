@@ -119,6 +119,9 @@ class speech_to_text:
         print(f'Finished in {round(finish - start, 2)} seconds(s) ')
         return text_result, safe_image_result
 
+    def CompressVideo(self):
+        pass
+
 
 @app.route('/video/upload', methods=['POST'])
 def Classification():
