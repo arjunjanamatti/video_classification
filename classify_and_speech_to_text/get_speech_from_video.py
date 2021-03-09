@@ -120,6 +120,10 @@ class speech_to_text:
         return text_result, safe_image_result
 
     def CompressVideo(self):
+        command_10 = [f"{ffmpeg_location}",
+                      "-i", f"{self.video_file}", "-vcodec", "libx264", "-crf", "30", "-preset", "fast",
+                      f"{self.video_file_name}_compress.mp4"]
+        compress_video = subprocess.check_output(command_10, shell=True)
         pass
 
 
