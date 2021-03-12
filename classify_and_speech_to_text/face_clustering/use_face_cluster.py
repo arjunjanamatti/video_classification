@@ -44,12 +44,41 @@ class speech_to_text:
                 print(f'Exeception: {e}')
                 pass
 
+    def ExtractFaces(self, image, neighbors=3):
+        img = cv.imread(filename=image)
+        image_filename = image.split('\\')[-1]
+        video_filename = image.split('\\')[0]
+        # convert to grayscale image
+        gray_image = cv.cvtColor(src=img, code=cv.COLOR_BGR2GRAY)
+        # call the har cascade xml file
+        har_cas = cv.CascadeClassifier('har_face.xml')
+        # detect faces
+        face_detect = har_cas.detectMultiScale(image=gray_image, scaleFactor=1.1, minNeighbors=neighbors)
+        for (x, y, w, h) in face_detect:
+            cv.rectangle(img=img, pt1=(x, y), pt2=(x + w, y + h), thickness=2, color=(0, 255, 0))
+            roi_color = img[y:y + h, x:x + w]
+            print(str(video_filename) + "\\faces\\" + str(image_filename) + str(x) + str(w) + str(h) + '_faces.jpg')
+            cv.imwrite(
+                str(video_filename) + "\\faces\\" + str(image_filename) + str(x) + str(w) + str(h) + '_faces.jpg',
+                roi_color)
+
+    def Check(self):
+        # self.MakeImageDirectory()
+        os.mkdir(f'{self.video_file_name}/faces')
+        images_list = glob(f'{self.video_file_name}/*.jpg')
+        print(images_list)
+        for image in images_list:
+            self.ExtractFaces(image)
+        pass
+
     def UseFaceCluster(self):
         self.MakeImageDirectory()
         command = ['python', 'encode_faces.py', '--dataset', f'{self.video_file_name}', '--encodings', f'{self.video_file_name}.pickle', '--detection_method', 'hog']
         a = subprocess.run(command, shell=True)
         pass
 
+
+
 a = speech_to_text('sample.mp4')
-a.UseFaceCluster()
+a.Check()
 
