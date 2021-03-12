@@ -63,7 +63,7 @@ class speech_to_text:
                 roi_color)
 
     def Check(self):
-        # self.MakeImageDirectory()
+        self.MakeImageDirectory()
         os.mkdir(f'{self.video_file_name}/faces')
         images_list = glob(f'{self.video_file_name}/*.jpg')
         print(images_list)
@@ -72,13 +72,17 @@ class speech_to_text:
         pass
 
     def UseFaceCluster(self):
-        self.MakeImageDirectory()
-        command = ['python', 'encode_faces.py', '--dataset', f'{self.video_file_name}', '--encodings', f'{self.video_file_name}.pickle', '--detection_method', 'hog']
-        a = subprocess.run(command, shell=True)
+        self.Check()
+        command_encode_faces = ['python', 'encode_faces.py', '--dataset', f'{self.video_file_name}/faces', '--encodings', f'{self.video_file_name}.pickle', '--detection_method', 'hog']
+        encode_f = subprocess.run(command_encode_faces, shell=True)
+        # python cluster_faces.py --encodings encodings.pickle --jobs -1
+        command_cluster_faces = ['python', 'cluster_faces.py', '--encodings', f'{self.video_file_name}.pickle', '--jobs', '-1']
+        encode_cl = subprocess.run(command_cluster_faces, shell=True)
+
         pass
 
 
 
-a = speech_to_text('sample.mp4')
-a.Check()
+a = speech_to_text('sample_video.mp4')
+a.UseFaceCluster()
 
