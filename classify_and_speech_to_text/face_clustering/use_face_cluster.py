@@ -72,11 +72,14 @@ class speech_to_text:
         pass
 
     def UseFaceCluster(self):
+        start = time.perf_counter()
         self.MakeFaceDirectory()
         command_encode_faces = ['python', 'encode_faces.py', '--dataset', f'{self.video_file_name}/faces', '--encodings', f'{self.video_file_name}.pickle', '--detection_method', 'hog']
         encode_f = subprocess.run(command_encode_faces, shell=True)
         command_cluster_faces = ['python', 'cluster_faces.py', '--encodings', f'{self.video_file_name}.pickle', '--jobs', '-1']
         encode_cl = subprocess.run(command_cluster_faces, shell=True)
+        finish = time.perf_counter()
+        print(f'Finished in {round(finish - start, 2)} seconds(s) ')
 
 
 
