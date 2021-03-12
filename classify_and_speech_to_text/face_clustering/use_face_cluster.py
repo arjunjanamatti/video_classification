@@ -43,3 +43,13 @@ class speech_to_text:
             except Exception as e:
                 print(f'Exeception: {e}')
                 pass
+
+    def UseFaceCluster(self):
+        self.MakeImageDirectory()
+        command = ['python', 'encode_faces.py', '--dataset', f'{self.video_file_name}', '--encodings', f'{self.video_file_name}.pickle', '--detection_method', 'hog']
+        a = subprocess.run(command, shell=True)
+        pass
+
+a = speech_to_text('sample.mp4')
+a.UseFaceCluster()
+
