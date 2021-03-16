@@ -105,6 +105,12 @@ class speech_to_text:
     def AllUniqueFaces(self):
         self.UseFaceCluster()
         self.GetUniqueFacesDirectory()
+        # get the names of all folders in directory
+        my_dirs = [d for d in os.listdir('.') if os.path.isdir(os.path.join('.', d))]
+        # get the names of folders which have label in their names
+        req_dirs = [dir for dir in my_dirs if 'label' in dir]
+        for dir in req_dirs:
+            os.remove(dir)
         pass
 
 
