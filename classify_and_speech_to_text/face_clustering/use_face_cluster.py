@@ -82,10 +82,14 @@ class speech_to_text:
         print(f'Finished in {round(finish - start, 2)} seconds(s) ')
 
     def GetUniqueFaces(self):
+        my_dirs = [d for d in os.listdir('.') if os.path.isdir(os.path.join('.', d))]
+        print(my_dirs)
+        req_dirs = [dir for dir in my_dirs if 'label' in dir]
+        print(req_dirs)
         pass
 
 
 
 a = speech_to_text('Pant.mp4')
-a.UseFaceCluster()
+a.GetUniqueFaces()
 
