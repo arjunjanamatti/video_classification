@@ -82,23 +82,33 @@ class speech_to_text:
         finish = time.perf_counter()
         print(f'Finished in {round(finish - start, 2)} seconds(s) ')
 
-    def GetUniqueFaces(self):
+    def GetUniqueFacesDirectory(self):
+        # get the names of all folders in directory
         my_dirs = [d for d in os.listdir('.') if os.path.isdir(os.path.join('.', d))]
-        print(my_dirs)
+        # get the names of folders which have label in their names
         req_dirs = [dir for dir in my_dirs if 'label' in dir]
-        print(req_dirs)
+        try:
+            # create a directory with label unique faces
+            os.mkdir(f'unique_faces_{self.video_file.split(".")[0]}')
+        except Exception as e:
+            pass
         for image in req_dirs:
             files = os.listdir(image)
             print(files)
             random_file = random.choice(files)
             print(random_file)
-            shutil.move(image+'/'+random_file,'.')
-            os.rename(random_file,f'{image}_{random_file}')
-            pass
+            shutil.move(image+'/'+random_file,f'unique_faces_{self.video_file.split(".")[0]}/')
+            os.rename(f'unique_faces_{self.video_file.split(".")[0]}/{random_file}',f'unique_faces_{self.video_file.split(".")[0]}/unique_face_{image.split("_")[-1]}_{random_file}')
+        pass
+
+
+    def AllUniqueFaces(self):
+        self.UseFaceCluster()
+        self.GetUniqueFacesDirectory()
         pass
 
 
 
 a = speech_to_text('Pant.mp4')
-a.GetUniqueFaces()
+a.AllUniqueFaces()
 

@@ -105,7 +105,7 @@ for labelID in labelIDs:
     cv2.imshow(title, montage)
     cv2.waitKey(0)
     """
-    cv2.imwrite(os.path.join(CLUSTERING_RESULT_PATH, title + '.jpg'), montage)
+    # cv2.imwrite(os.path.join(CLUSTERING_RESULT_PATH, title + '.jpg'), montage)
 
 
 # we have quantified and encoded all faces in our dataset as 128-d vectors, the next step is to cluster them into groups. Our hope is that each unique individual person will have their own separate cluster
