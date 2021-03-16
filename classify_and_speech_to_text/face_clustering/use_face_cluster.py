@@ -10,6 +10,7 @@ import operator
 import shutil
 from flask import Flask, request
 import base64
+import random
 
 
 # python encode_faces.py --dataset dataset --encodings encodings.pickle --detection_method "cnn"
@@ -86,6 +87,14 @@ class speech_to_text:
         print(my_dirs)
         req_dirs = [dir for dir in my_dirs if 'label' in dir]
         print(req_dirs)
+        for image in req_dirs:
+            files = os.listdir(image)
+            print(files)
+            random_file = random.choice(files)
+            print(random_file)
+            shutil.move(image+'/'+random_file,'.')
+            os.rename(random_file,f'{image}_{random_file}')
+            pass
         pass
 
 
