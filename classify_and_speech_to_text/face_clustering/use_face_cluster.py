@@ -81,6 +81,9 @@ class speech_to_text:
         finish = time.perf_counter()
         print(f'Finished in {round(finish - start, 2)} seconds(s) ')
 
+    def GetUniqueFaces(self):
+        pass
+
 
 
 a = speech_to_text('Pant.mp4')

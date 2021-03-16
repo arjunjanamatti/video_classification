@@ -42,7 +42,7 @@ for (i, imagePath) in enumerate(imagePaths):
 	# loading image to BGR
 	image = cv2.imread(imagePath)
 
-	# ocnverting image to RGB format
+	# converting image to RGB format
 	image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
 	# detect the (x, y)-coordinates of the bounding boxes

@@ -109,7 +109,7 @@ for labelID in labelIDs:
 
 
 # we have quantified and encoded all faces in our dataset as 128-d vectors, the next step is to cluster them into groups. Our hope is that each unique individual person will have their own separate cluster
-# 
+#
 # For this task we need a clustering algorithm, many clustering algorithms such as k-means and Hierarchical Agglomerative Clustering, require us to specify the number of clusters we seek ahead of time. Therefore, we need to use a density-based or graph-based clustering algorithm Density-based spatial clustering of applications with noise (DBSCAN)
 #
 # Arguments:
