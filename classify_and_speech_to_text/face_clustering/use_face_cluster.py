@@ -111,7 +111,8 @@ class speech_to_text:
         req_dirs = [dir for dir in my_dirs if 'label' in dir]
         for dir in req_dirs:
             shutil.rmtree(dir)
-        pass
+        shutil.rmtree(f'{self.video_file.split(".")[0]}')
+
 
 
 
