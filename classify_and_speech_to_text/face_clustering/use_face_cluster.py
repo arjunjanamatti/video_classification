@@ -116,6 +116,7 @@ class speech_to_text:
         for dir in req_dirs:
             shutil.rmtree(dir)
         shutil.rmtree(f'{self.video_file.split(".")[0]}')
+        os.remove(f'{self.video_file.split(".")[0]}.pickle')
         return base_encoded_list
 
 
@@ -136,6 +137,6 @@ if __name__ == "__main__":
     app.run()
 
 
-a = speech_to_text('Pant.mp4')
-a.AllUniqueFaces()
+# a = speech_to_text('Pant.mp4')
+# a.AllUniqueFaces()
 
