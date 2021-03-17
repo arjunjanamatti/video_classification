@@ -102,13 +102,13 @@ class speech_to_text:
             os.rename(f'unique_faces_{self.video_file.split(".")[0]}/{random_file}',f'unique_faces_{self.video_file.split(".")[0]}/unique_face_{image.split("_")[-1]}_{random_file}')
             with open(f'unique_faces_{self.video_file.split(".")[0]}/unique_face_{image.split("_")[-1]}_{random_file}', "rb") as imageFile:
                 text = base64.b64encode(imageFile.read()).decode('utf-8')
-            print(f'Base64 text: {text}')
-        pass
+            base_encoded_list.append(text)
+        return  base_encoded_list
 
 
     def AllUniqueFaces(self):
         self.UseFaceCluster()
-        self.GetUniqueFacesDirectory()
+        base_encoded_list = self.GetUniqueFacesDirectory()
         # get the names of all folders in directory
         my_dirs = [d for d in os.listdir('.') if os.path.isdir(os.path.join('.', d))]
         # get the names of folders which have label in their names
@@ -116,6 +116,7 @@ class speech_to_text:
         for dir in req_dirs:
             shutil.rmtree(dir)
         shutil.rmtree(f'{self.video_file.split(".")[0]}')
+        return base_encoded_list
 
 
 @app.route('/video/upload', methods=['POST'])
@@ -124,11 +125,9 @@ def Main():
         file = request.files['file']
         print('Filename: ',file.filename)
         check = speech_to_text(file.filename)
-        text_result, safe_image_result, text_base64 = check.AllUniqueFaces()
+        base_encoded_list = check.AllUniqueFaces()
 
-        return {"Transcript_result": text_result,
-                'Video content result': safe_image_result,
-                "videoBase64": text_base64}
+        return {"imageBase64": base_encoded_list}
 
 
 
