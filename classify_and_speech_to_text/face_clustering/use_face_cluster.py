@@ -21,15 +21,16 @@ ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpe
 command = ['python','encode_faces.py']
 a = subprocess.run(command, shell=True)
 
-app = Flask(__name__)
+# app = Flask(__name__)
 
 class speech_to_text:
     def __init__(self, video_file):
+        # update the video filename
         self.video_file = video_file
         self.video_file_name = self.video_file.split('.')[0]
 
     def VideoToText(self):
-
+        #
         video = self.video_file
 
         command = [ffmpeg_location, "-i", f"{video}", "-ac", "1", "-ab", "16000", "-ar", "16000", "temp_output.wav"]
@@ -41,12 +42,12 @@ class speech_to_text:
             shell=True, stdout=subprocess.PIPE, )
         output = proc.communicate()[0]
         os.remove("temp_output.wav")
-
+        print(output)
         return output
 
     def ProfaneWordList(self):
         try:
-            with open(file=f'{dir_loc}/data.pickle', mode='rb') as file:
+            with open(file='data.pickle', mode='rb') as file:
                 word_list_df = pickle.load(file)
         except:
             df = pd.read_csv('profane_word_list.txt', header=None)
@@ -151,8 +152,9 @@ class speech_to_text:
 
     def AllUniqueFaces(self):
         self.UseFaceCluster()
-        base_encoded_list = self.GetUniqueFacesDirectory()
         text_result = self.TextResult()
+        base_encoded_list = self.GetUniqueFacesDirectory()
+
         # get the names of all folders in directory
         my_dirs = [d for d in os.listdir('.') if os.path.isdir(os.path.join('.', d))]
         # get the names of folders which have label in their names
@@ -164,22 +166,29 @@ class speech_to_text:
         return base_encoded_list, text_result
 
 
-@app.route('/video/upload', methods=['POST'])
+# @app.route('/video/upload', methods=['POST'])
 def Main():
     if request.method == 'POST':
         file = request.files['file']
         print('Filename: ',file.filename)
         check = speech_to_text(file.filename)
-        base_encoded_list,text_result = check.AllUniqueFaces()
-
-        return {"imageBase64": base_encoded_list,
-                "Transcript_result": text_result}
+        # base_encoded_list,text_result = check.AllUniqueFaces()
+        text_result = check.TextResult()
+        return {"Transcript_result": text_result}
+        # return {"imageBase64": base_encoded_list,
+        #         "Transcript_result": text_result}
 
 
 
 
 if __name__ == "__main__":
-    app.run()
+    # app.run()
+    file = 'sample.mp4'
+    print('Filename: ', file)
+    check = speech_to_text(file)
+    # base_encoded_list,text_result = check.AllUniqueFaces()
+    text_result = check.TextResult()
+    print(text_result)
 
 
 # a = speech_to_text('Pant.mp4')
