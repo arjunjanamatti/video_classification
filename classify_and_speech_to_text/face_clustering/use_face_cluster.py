@@ -12,7 +12,11 @@ from flask import Flask, request
 import base64
 import random
 
-
+dir_loc =  'C:/Users/Arjun Janamatti/PycharmProjects/video_classification/classify_and_speech_to_text/'
+DEEPSPEECH_MODEL_PATH = f"{dir_loc}/deepspeech-0.9.3-models.pbmm"
+DEEPSPEECH_SCORER_PATH = f"{dir_loc}/deepspeech-0.9.3-models.scorer"
+image_classification_model = predict.load_model(f'{dir_loc}/nsfw.299x299.h5')
+ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe"
 # python encode_faces.py --dataset dataset --encodings encodings.pickle --detection_method "cnn"
 command = ['python','encode_faces.py']
 a = subprocess.run(command, shell=True)
@@ -23,6 +27,45 @@ class speech_to_text:
     def __init__(self, video_file):
         self.video_file = video_file
         self.video_file_name = self.video_file.split('.')[0]
+
+    def VideoToText(self):
+
+        video = self.video_file
+
+        command = [ffmpeg_location, "-i", f"{video}", "-ac", "1", "-ab", "16000", "-ar", "16000", "temp_output.wav"]
+        video_to_audio = subprocess.check_output(command, shell=True)
+
+        audio_filename = 'temp_output.wav'
+        proc = subprocess.Popen(
+            f"deepspeech --model {DEEPSPEECH_MODEL_PATH}  --audio " + audio_filename,
+            shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0]
+        os.remove("temp_output.wav")
+
+        return output
+
+    def ProfaneWordList(self):
+        try:
+            with open(file=f'{dir_loc}/data.pickle', mode='rb') as file:
+                word_list_df = pickle.load(file)
+        except:
+            df = pd.read_csv('profane_word_list.txt', header=None)
+            word_list_df = [words for words in df.iloc[:, -1]]
+
+            with open('data.pickle', mode='wb') as file:
+                pickle.dump(word_list_df, file)
+
+        return word_list_df
+
+    def TextResult(self):
+        video_text = self.VideoToText()
+        video_text = video_text.decode('utf-8')
+        word_list_df = self.ProfaneWordList()
+        profane_words_list = []
+        for words in word_list_df:
+            if words in video_text:
+                profane_words_list.append(words)
+        return f'{self.video_file} has approximately {len(profane_words_list)} number of profane words and profane words in speech are {profane_words_list}!!!'
 
     def MakeImageDirectory(self):
         vidObj = cv.VideoCapture(self.video_file)
@@ -109,6 +152,7 @@ class speech_to_text:
     def AllUniqueFaces(self):
         self.UseFaceCluster()
         base_encoded_list = self.GetUniqueFacesDirectory()
+        text_result = self.TextResult()
         # get the names of all folders in directory
         my_dirs = [d for d in os.listdir('.') if os.path.isdir(os.path.join('.', d))]
         # get the names of folders which have label in their names
@@ -117,7 +161,7 @@ class speech_to_text:
             shutil.rmtree(dir)
         shutil.rmtree(f'{self.video_file.split(".")[0]}')
         os.remove(f'{self.video_file.split(".")[0]}.pickle')
-        return base_encoded_list
+        return base_encoded_list, text_result
 
 
 @app.route('/video/upload', methods=['POST'])
@@ -126,9 +170,10 @@ def Main():
         file = request.files['file']
         print('Filename: ',file.filename)
         check = speech_to_text(file.filename)
-        base_encoded_list = check.AllUniqueFaces()
+        base_encoded_list,text_result = check.AllUniqueFaces()
 
-        return {"imageBase64": base_encoded_list}
+        return {"imageBase64": base_encoded_list,
+                "Transcript_result": text_result}
 
 
 
