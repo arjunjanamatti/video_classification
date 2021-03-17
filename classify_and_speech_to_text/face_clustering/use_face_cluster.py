@@ -17,6 +17,8 @@ import random
 command = ['python','encode_faces.py']
 a = subprocess.run(command, shell=True)
 
+app = Flask(__name__)
+
 class speech_to_text:
     def __init__(self, video_file):
         self.video_file = video_file
@@ -92,13 +94,15 @@ class speech_to_text:
             os.mkdir(f'unique_faces_{self.video_file.split(".")[0]}')
         except Exception as e:
             pass
+        base_encoded_list = []
         for image in req_dirs:
             files = os.listdir(image)
-            print(files)
             random_file = random.choice(files)
-            print(random_file)
             shutil.move(image+'/'+random_file,f'unique_faces_{self.video_file.split(".")[0]}/')
             os.rename(f'unique_faces_{self.video_file.split(".")[0]}/{random_file}',f'unique_faces_{self.video_file.split(".")[0]}/unique_face_{image.split("_")[-1]}_{random_file}')
+            with open(f'unique_faces_{self.video_file.split(".")[0]}/unique_face_{image.split("_")[-1]}_{random_file}', "rb") as imageFile:
+                text = base64.b64encode(imageFile.read()).decode('utf-8')
+            print(f'Base64 text: {text}')
         pass
 
 
@@ -114,6 +118,23 @@ class speech_to_text:
         shutil.rmtree(f'{self.video_file.split(".")[0]}')
 
 
+@app.route('/video/upload', methods=['POST'])
+def Main():
+    if request.method == 'POST':
+        file = request.files['file']
+        print('Filename: ',file.filename)
+        check = speech_to_text(file.filename)
+        text_result, safe_image_result, text_base64 = check.AllUniqueFaces()
+
+        return {"Transcript_result": text_result,
+                'Video content result': safe_image_result,
+                "videoBase64": text_base64}
+
+
+
+
+if __name__ == "__main__":
+    app.run()
 
 
 a = speech_to_text('Pant.mp4')
