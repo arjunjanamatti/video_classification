@@ -12,9 +12,10 @@ from flask import Flask, request
 import base64
 import random
 
-dir_loc =  'C:/Users/Arjun Janamatti/PycharmProjects/video_classification/classify_and_speech_to_text/'
+dir_loc =  'C:/Users/Arjun Janamatti/PycharmProjects/video_classification/classify_and_speech_to_text'
 DEEPSPEECH_MODEL_PATH = f"{dir_loc}/deepspeech-0.9.3-models.pbmm"
 DEEPSPEECH_SCORER_PATH = f"{dir_loc}/deepspeech-0.9.3-models.scorer"
+print(DEEPSPEECH_MODEL_PATH)
 image_classification_model = predict.load_model(f'{dir_loc}/nsfw.299x299.h5')
 ffmpeg_location = "C:/PATH_programs/ffmpeg-4.3.2-2021-02-20-full_build/bin/ffmpeg.exe"
 # python encode_faces.py --dataset dataset --encodings encodings.pickle --detection_method "cnn"
@@ -32,10 +33,11 @@ class speech_to_text:
     def VideoToText(self):
         #
         video = self.video_file
-
+        print(video)
         command = [ffmpeg_location, "-i", f"{video}", "-ac", "1", "-ab", "16000", "-ar", "16000", "temp_output.wav"]
+        print(command)
         video_to_audio = subprocess.check_output(command, shell=True)
-
+        print(f'{video_to_audio} completed')
         audio_filename = 'temp_output.wav'
         proc = subprocess.Popen(
             f"deepspeech --model {DEEPSPEECH_MODEL_PATH}  --audio " + audio_filename,
